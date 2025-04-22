@@ -27,11 +27,16 @@ ARG BUILD_HASH
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+
+# Increase memory limit for Node.js to prevent out-of-memory errors
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 RUN npm ci
 
 COPY . .
 ENV APP_BUILD_HASH=${BUILD_HASH}
 RUN npm run build
+
 
 ######## WebUI backend ########
 FROM python:3.11-slim-bookworm AS base
